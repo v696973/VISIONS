@@ -25,5 +25,5 @@ Use `python main.py infer` mode allows to perform similarity queries on the data
 
 At first run, VISIONS will download weights for pre-trained models, used for feature extraction. Weights for aligner models are included into this repo.
 
-## Papers and repos used:
-[VSE++: Improving Visual-Semantic Embeddings with Hard Negatives](https://arxiv.org/abs/1707.05612) - aligner models were trained using MH loss described in the paper. https://github.com/fartashf/vsepp was used as a reference implementation of the loss function.
+## Papers and repos used
+* [VSE++: Improving Visual-Semantic Embeddings with Hard Negatives](https://arxiv.org/abs/1707.05612) - aligner models were trained using MH loss described in the paper. https://github.com/fartashf/vsepp was used as a reference implementation of the loss function.
