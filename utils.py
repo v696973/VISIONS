@@ -1,4 +1,6 @@
+# -*- coding:utf-8 -*-
 import numpy as np
+from PIL import Image
 import tensorflow as tf
 from sklearn.preprocessing import normalize
 
@@ -33,3 +35,29 @@ def recall(a, b, k=1):
             total_recall += 1
 
     return total_recall / a.shape[0]
+
+
+def is_binary_file(fname):
+    # based on https://stackoverflow.com/questions/898669#7392391
+    with open(fname, 'rb') as f:
+        s = f.read(1024)
+    # if type(s) is not bytes:
+    #     s = s.encode('utf-8', errors='ignore')
+    textchars = bytearray(
+        {7, 8, 9, 10, 12, 13, 27} | set(range(0x20, 0x100)) - {0x7f}
+    )
+    return bool(s.translate(None, textchars))
+
+
+def img_or_text(fname):
+    try:
+        img = Image.open(fname)
+        img.verify()
+        return 'img'
+    except Exception:  # I don't really know what exactly will 'verify()' rise
+        pass
+
+    if is_binary_file(fname):
+        return None
+    else:  # let's be optimistic
+        return 'text'

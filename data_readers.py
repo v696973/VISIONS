@@ -1,8 +1,18 @@
+# -*- coding: utf-8 -*-
 import os
 from tqdm import tqdm
+from utils import img_or_text
 
 
-class SimpleDirReader(object):
+class DataReader(object):
+    '''
+    Base class for data readers.
+    '''
+    def __init__(self, reserved_paths=['index']):
+        self.reserved_paths = reserved_paths
+
+
+class SimpleDirReader(DataReader):
     '''
     Simple data preprocessor. Expects dataset to be in a data_path directory
     in format of:
@@ -27,9 +37,9 @@ class SimpleDirReader(object):
     images and texts
     '''
     def __init__(self, reserved_paths=['index']):
-        self.reserved_paths = reserved_paths
+        super().__init__(reserved_paths)
 
-    def process_dir(self, data_path, verbose=True):
+    def process_data(self, data_path, verbose=True):
         data = []
         paths = os.listdir(data_path)
         if verbose:
@@ -63,16 +73,20 @@ class SimpleDirReader(object):
         return data
 
     def process_single(self, entity_path):
-        entity = {
-            'path': entity_path,
-            'img': [],
-            'text': []
-        }
+        if not os.path.exists(entity_path):
+            raise ValueError('There is no entity under provided path.')
+
         if entity_path in self.reserved_paths:
             raise ValueError('This path is reserved by the application.')
 
         if not os.path.isdir(entity_path):
             raise NotADirectoryError('Provided path is not a directory.')
+
+        entity = {
+            'path': entity_path,
+            'img': [],
+            'text': []
+        }
 
         img_path = os.path.join(entity_path, 'img')
         text_path = os.path.join(entity_path, 'text')
@@ -85,4 +99,81 @@ class SimpleDirReader(object):
                 open(os.path.join(text_path, fname), 'r').read()
                 for fname in os.listdir(text_path)
             ]
+        return entity
+
+
+class FlatDirReader(DataReader):
+    '''
+    This data reader simply reads a flat directory, which can contain both
+    text files and images. The reader does its best at identifying image
+    and text files, using simple heuristics, therefore it's best to keep texts
+    in plain txt files when processing them using this data reader.
+    '''
+    def __init__(self):
+        super().__init__()
+
+    def process_data(self, data_path, verbose=True):
+        data = []
+        paths = os.listdir(data_path)
+        if verbose:
+            paths = tqdm(paths)
+        for path in paths:
+            if path in self.reserved_paths and not os.path.isfile(path):
+                continue
+
+            entity_path = os.path.join(data_path, path)
+
+            entity_type = img_or_text(entity_path)
+
+            if entity_type == 'img':
+                entity = {
+                    'path': entity_path,
+                    'img': [entity_path],
+                    'text': []
+                }
+            elif entity_type == 'text':
+                with open(entity_path, 'r') as f:
+                    entity_text = f.read()
+
+                entity = {
+                    'path': entity_path,
+                    'img': [],
+                    'text': [entity_text]
+                }
+            else:
+                continue  # TODO raise warning here, or do proper logging
+
+            data.append(entity)
+        return data
+
+    def process_single(self, entity_path):
+        if not os.path.exists(entity_path):
+            raise ValueError('There is no entity under provided path.')
+
+        if entity_path in self.reserved_paths:
+            raise ValueError('Provided path is reserved by the application.')
+
+        if not os.path.isfile(entity_path):
+            raise NotADirectoryError('Provided path is not a file.')
+
+        entity_type = img_or_text(entity_path)
+
+        if entity_type == 'img':
+            entity = {
+                'path': entity_path,
+                'img': [entity_path],
+                'text': []
+            }
+        elif entity_type == 'text':
+            with open(entity_path, 'r') as f:
+                entity_text = f.read()
+
+            entity = {
+                'path': entity_path,
+                'img': [],
+                'text': [entity_text]
+            }
+        else:
+            pass  # TODO raise warning here, or do proper logging
+
         return entity

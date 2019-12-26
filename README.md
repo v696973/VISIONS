@@ -1,5 +1,5 @@
 # VISIONS
-VISIONS (for VISual-semantIc navigatiOn in raNdom datasetS) is a tool for ranking and visual navigation in random data sets, consisting of images, text data, or their combinations.
+VISIONS (for VIsual-SemantIc navigatiOn in raNdom datasetS) is a tool for ranking and visual navigation in random data sets, consisting of images, text data, or their combinations.
 
 The project is on it's early stage and is currently under heavy development.
 
@@ -14,11 +14,12 @@ VISIONS requires Python 3.6+ to work.
 
 ## Usage
 See `python main.py --help` for help.
-For now, the project requires dataset to be a directory with a separate subdirectory for every entity in the dataset. Each entity dir should have two subdirectories - `img` and `text` for images and text files respectively.
-
 In order to query the dataset, VISIONS first needs to build an index for it. For now, only flat index is supported (flat index puts the embeddings into separate bucket files and then performs bruteforce nearest neighbour search on each bucket).
 
-Use `python main.py build_index --data_dir <your dataset directory>` to build new index. See `python main.py build_index --help`
+Use `python main.py build_index --data_dir <your dataset directory>` to build new index. 
+For now, the project supports two basic dataset formats: flat directory with texts and/or images, and nested directory with mixed data. Flat directory data reader treats every separate file (either image or text file) as a separate entity. Mixed data reader requires dataset to be a directory with a separate subdirectory for every entity in the dataset. Each entity dir should have two subdirectories - `img` and `text` for images and text files respectively.
+
+See `python main.py build_index --help`
 for additional parameters.
 
 Use `python main.py infer` mode allows to perform similarity queries on the dataset. See `python main.py infer --help` for more info.

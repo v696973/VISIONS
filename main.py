@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import argparse
 import index
@@ -47,9 +48,11 @@ def build_index(args):
 
     if args.data_reader_type == 'simple_dir':
         data_reader = data_readers.SimpleDirReader()
-    else:  # TODO?
+    elif args.data_reader_type == 'flat_dir':
+        data_reader = data_readers.FlatDirReader()
+    else:
         raise NotImplementedError('Unknown data reader type.')
-    data = data_reader.process_dir(args.data_path)
+    data = data_reader.process_data(args.data_path)
     for entity in tqdm(data):
         # TODO: add config for embedding merge strategies
         entity_vec = vse.embed(entity['img'], entity['text'])
@@ -72,7 +75,9 @@ def query(args):
 
     if args.data_reader_type == 'simple_dir':
         data_reader = data_readers.SimpleDirReader()
-    else:  # TODO?
+    elif args.data_reader_type == 'flat_dir':
+        data_reader = data_readers.FlatDirReader()
+    else:
         raise NotImplementedError('Unknown data reader type.')
 
     if args.query_text or args.query_path:
@@ -128,7 +133,7 @@ def main():
         default='simple_dir',
         const='simple_dir',
         nargs='?',
-        choices=('simple_dir',),
+        choices=('simple_dir', 'flat_dir'),
         help='index type (default: %(default)s)'
     )
     build_index_parser.add_argument(
@@ -181,7 +186,7 @@ def main():
         default='simple_dir',
         const='simple_dir',
         nargs='?',
-        choices=('simple_dir',),
+        choices=('simple_dir', 'flat_dir'),
         help='index type (default: %(default)s)'
     )
     infer_parser.set_defaults(func=query)

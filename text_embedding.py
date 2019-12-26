@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import tensorflow as tf  # NOQA
 import tensorflow_hub as hub
