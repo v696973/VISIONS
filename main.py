@@ -16,8 +16,8 @@ def build_index(args):
     vse = VSEPPModel(
         img_encoder,
         text_encoder,
-        img_aligner_weights='models/vsepp/512/ep30_dim_512_lr2e-06_img.h5',
-        text_aligner_weights='models/vsepp/512/ep30_dim_512_lr2e-06_text.h5'
+        img_aligner_weights='models/vsepp/512_rc_avg_no_bn_adam_lr_0_002/ep23_dim_512_img.h5',    # NOQA
+        text_aligner_weights='models/vsepp/512_rc_avg_no_bn_adam_lr_0_002/ep23_dim_512_text.h5',  # NOQA
     )
     if args.index_path:
         index_path = args.index_path
@@ -86,8 +86,8 @@ def query(args):
         vse = VSEPPModel(
             img_encoder,
             text_encoder,
-            img_aligner_weights='models/vsepp/512/ep30_dim_512_lr2e-06_img.h5',
-            text_aligner_weights='models/vsepp/512/ep30_dim_512_lr2e-06_text.h5'  # NOQA
+            img_aligner_weights='models/vsepp/512_rc_avg_no_bn_adam_lr_0_002/ep23_dim_512_img.h5',    # NOQA
+            text_aligner_weights='models/vsepp/512_rc_avg_no_bn_adam_lr_0_002/ep23_dim_512_text.h5',  # NOQA
         )
         if args.query_text:
             # TODO: config for merge strategies
