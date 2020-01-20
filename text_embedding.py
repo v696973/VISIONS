@@ -41,10 +41,8 @@ class M_USEModel(object):
         pass
 
     def embed(self, texts, l2_norm=False):
-        vectors = []
         vectors = self.encoder(texts).numpy()
-
         if l2_norm:
-            vectors = [utils.l2norm(v) for v in vectors]
+            vectors = utils.l2norm(vectors)
 
         return vectors

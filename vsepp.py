@@ -50,7 +50,7 @@ class VSEPPModel(object):
         normalize_img_aligner_input=True,
         normalize_img_aligner_output=True,
         normalize_text_aligner_input=True,
-        normalize_text_aligner_output=True
+        normalize_text_aligner_output=True,
     ):
         self.img_encoder = img_encoder
         self.text_encoder = text_encoder
@@ -58,19 +58,19 @@ class VSEPPModel(object):
         self.img_aligner = self.create_img_aligner(
             weights_path=img_aligner_weights,
             normalize_input=normalize_img_aligner_input,
-            normalize_output=normalize_img_aligner_output
+            normalize_output=normalize_img_aligner_output,
         )
         self.text_aligner = self.create_text_aligner(
             weights_path=text_aligner_weights,
             normalize_input=normalize_text_aligner_input,
-            normalize_output=normalize_text_aligner_output
+            normalize_output=normalize_text_aligner_output,
         )
 
     def create_img_aligner(
         self,
         weights_path=None,
         normalize_input=True,
-        normalize_output=True
+        normalize_output=True,
     ):
         # img aligner model takes image encoder output and projects it
         # into a common visual-semantic embedding space
@@ -101,9 +101,9 @@ class VSEPPModel(object):
 
     def create_text_aligner(
         self,
+        weights_path=None,
         normalize_input=True,
         normalize_output=True,
-        weights_path=None
     ):
         # text aligner model takes text encoder output and projects it
         # into a common visual-semantic embedding space
@@ -141,7 +141,7 @@ class VSEPPModel(object):
 
     def train_mode(
         self,
-        lr=.0002,
+        optimizer,
         loss_margin=0.2,
         clip_grad_value=2.
     ):
@@ -159,7 +159,7 @@ class VSEPPModel(object):
             [img_aligner_input, text_aligner_input],
             concat
         )
-        self.optimizer = tf.keras.optimizers.Adam(lr=lr)
+        self.optimizer = optimizer
         self.loss_margin = loss_margin
         self.clip_grad_value = clip_grad_value
 

@@ -12,11 +12,11 @@ def chunks(l, n):
     return [l[i:i + n] for i in range(0, len(l), n)]
 
 
-def l2norm(vector):
+def l2norm(v):
     '''
-    scale vector to unit norm (vector length).
+    scale vectors to unit norm (vector length).
     '''
-    return normalize([vector], norm='l2')[0]
+    return normalize(v, norm='l2')
 
 
 def tf_l2norm(X):
